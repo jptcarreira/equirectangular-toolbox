@@ -14,6 +14,14 @@
 
 from math import pi
 import numpy as np
+import cv2
+import numpy as np
+import time
+import imageio as im
+
+import matplotlib.pyplot as plt
+
+
 
 class NFOV():
     def __init__(self, height=400, width=800):
@@ -88,9 +96,6 @@ class NFOV():
         CC = np.multiply(C, np.array([wc, wc, wc]).T)
         DD = np.multiply(D, np.array([wd, wd, wd]).T)
         nfov = np.reshape(np.round(AA + BB + CC + DD).astype(np.uint8), [self.height, self.width, 3])
-        import matplotlib.pyplot as plt
-        plt.imshow(nfov)
-        plt.show()
         return nfov
 
     def toNFOV(self, frame, center_point):
@@ -107,8 +112,19 @@ class NFOV():
 
 # test the class
 if __name__ == '__main__':
-    import imageio as im
-    img = im.imread('images/360.jpg')
-    nfov = NFOV()
-    center_point = np.array([0.5, .5])  # camera center point (valid range [0,1])
-    nfov.toNFOV(img, center_point)
+    img = im.imread('src/image.jpg')
+    nfov = NFOV(576,1024)
+    center_point = np.array([0.5, 0.5])  # camera center point (valid range [0,1])
+
+    for i in range(10):
+        start = time.time()
+        res = nfov.toNFOV(img, center_point)
+        end = time.time()
+        print(end - start)
+
+    cv2.imshow('image', res)
+    cv2.waitKey(0)
+
+#    plt.imshow(res)
+#    plt.show()
+
